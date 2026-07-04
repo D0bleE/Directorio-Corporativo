@@ -1,1 +1,51 @@
 // app global css
+
+body {
+  background: linear-gradient(180deg, #0d1b2a 0%, #132f4d 100%);
+  color: #ffffff;
+}
+
+.page-home {
+  min-height: calc(100vh - 64px);
+  background: transparent;
+}
+
+.menu-grid {
+  margin-top: 1rem;
+}
+
+.menu-card {
+  min-height: 170px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.menu-card q-card-section {
+  min-height: 108px;
+}
+
+.menu-card .q-icon {
+  color: #1976d2;
+}
+
+.text-grey-3 {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.q-page {
+  background: transparent;
+}

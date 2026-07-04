@@ -47,10 +47,24 @@
           <q-input v-model="filtros.empresa" dense outlined label="Empresa" clearable />
         </div>
         <div class="col-6 col-md-1">
-          <q-input v-model="filtros.ciudad" dense outlined label="Ciudad" clearable />
+          <q-input
+            v-model="filtros.ciudad"
+            dense
+            outlined
+            label="Ciudad"
+            clearable
+            @input="filtros.ciudad = filtros.ciudad.replace(/\d+/g, '')"
+          />
         </div>
         <div class="col-6 col-md-2">
-          <q-input v-model="filtros.pais" dense outlined label="País" clearable />
+          <q-input
+            v-model="filtros.pais"
+            dense
+            outlined
+            label="País"
+            clearable
+            @input="filtros.pais = filtros.pais.replace(/\d+/g, '')"
+          />
         </div>
       </div>
     </q-card-section>
@@ -128,7 +142,7 @@
             icon="visibility"
             label="Ver detalle"
             no-caps
-            @click="verDetalle(props.row)"
+            @click="openDialog(props.row)"
           />
         </q-td>
       </template>
@@ -145,14 +159,75 @@
         </div>
       </template>
     </q-table>
+
+    <q-dialog v-model="dialog" persistent>
+      <q-card style="min-width: 460px; max-width: 90vw">
+        <q-card-section>
+          <div class="text-h6">Editar colaborador</div>
+          <div class="text-subtitle2 text-grey-7">
+            Actualiza el nombre, apellido, ciudad o país sin permitir números.
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-form ref="form" @submit.prevent="guardarUsuario">
+            <div class="row q-col-gutter-md q-row-gutter-md">
+              <div class="col-12 col-md-6">
+                <q-input
+                  v-model="userForm.firstName"
+                  label="Nombre"
+                  dense
+                  outlined
+                  :rules="[rules.required, rules.noNumbers]"
+                  @input="stripNumbers('firstName', $event)"
+                />
+              </div>
+              <div class="col-12 col-md-6">
+                <q-input
+                  v-model="userForm.lastName"
+                  label="Apellido"
+                  dense
+                  outlined
+                  :rules="[rules.required, rules.noNumbers]"
+                  @input="stripNumbers('lastName', $event)"
+                />
+              </div>
+              <div class="col-12 col-md-6">
+                <q-input
+                  v-model="userForm.city"
+                  label="Ciudad"
+                  dense
+                  outlined
+                  :rules="[rules.required, rules.noNumbers]"
+                  @input="stripNumbers('city', $event)"
+                />
+              </div>
+              <div class="col-12 col-md-6">
+                <q-input
+                  v-model="userForm.country"
+                  label="País"
+                  dense
+                  outlined
+                  :rules="[rules.required, rules.noNumbers]"
+                  @input="stripNumbers('country', $event)"
+                />
+              </div>
+            </div>
+          </q-form>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" @click="cancelar" />
+          <q-btn color="primary" label="Guardar" unelevated @click="guardarUsuario" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-card>
 </template>
 
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue'
 import { getUsers } from 'src/services/userService'
-
-const emit = defineEmits(['view-user'])
 
 const loading = ref(false)
 
@@ -167,6 +242,60 @@ const filtros = reactive({
   ciudad: '',
   pais: '',
 })
+
+const dialog = ref(false)
+const form = ref(null)
+const selectedUser = ref(null)
+
+const userForm = reactive({
+  firstName: '',
+  lastName: '',
+  city: '',
+  country: '',
+})
+
+const rules = {
+  required: (val) => !!val || 'Campo obligatorio',
+  noNumbers: (val) => !/\d/.test(val) || 'No se permiten números',
+}
+
+const stripNumbers = (field, value) => {
+  userForm[field] = value.replace(/\d+/g, '')
+}
+
+const openDialog = (usuario) => {
+  selectedUser.value = usuario
+  userForm.firstName = usuario.firstName || ''
+  userForm.lastName = usuario.lastName || ''
+  userForm.city = usuario.address?.city || ''
+  userForm.country = usuario.address?.country || ''
+  dialog.value = true
+}
+
+const guardarUsuario = async () => {
+  if (form.value) {
+    const valid = await form.value.validate()
+    if (!valid) {
+      return
+    }
+  }
+
+  if (selectedUser.value) {
+    selectedUser.value.firstName = userForm.firstName
+    selectedUser.value.lastName = userForm.lastName
+    if (!selectedUser.value.address) {
+      selectedUser.value.address = {}
+    }
+    selectedUser.value.address.city = userForm.city
+    selectedUser.value.address.country = userForm.country
+  }
+
+  dialog.value = false
+}
+
+const cancelar = () => {
+  dialog.value = false
+}
 
 const usuariosFiltrados = computed(() => {
   return usuarios.value.filter((user) => {
@@ -301,12 +430,6 @@ const onRequest = (props) => {
   pagination.value = props.pagination
 
   cargarUsuarios(props.pagination.page)
-}
-
-const verDetalle = (usuario) => {
-  console.log(usuario)
-
-  emit('view-user', usuario)
 }
 
 onMounted(() => {

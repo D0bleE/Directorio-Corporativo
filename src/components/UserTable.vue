@@ -1,8 +1,63 @@
 <template>
   <q-card flat bordered>
+    <q-card-section>
+      <div class="row q-col-gutter-md">
+        <div class="col-12 col-md-3">
+          <q-input
+            v-model="filtros.busqueda"
+            dense
+            outlined
+            placeholder="Buscar por nombre o apellido"
+            clearable
+          >
+            <template v-slot:prepend><q-icon name="search" /></template>
+          </q-input>
+        </div>
+        <div class="col-6 col-md-2">
+          <q-select
+            v-model="filtros.genero"
+            :options="['male', 'female']"
+            dense
+            outlined
+            label="Género"
+            clearable
+          />
+        </div>
+        <div class="col-3 col-md-1">
+          <q-input
+            v-model.number="filtros.edadMin"
+            type="number"
+            dense
+            outlined
+            label="Edad Min"
+            clearable
+          />
+        </div>
+        <div class="col-3 col-md-1">
+          <q-input
+            v-model.number="filtros.edadMax"
+            type="number"
+            dense
+            outlined
+            label="Edad Max"
+            clearable
+          />
+        </div>
+        <div class="col-12 col-md-2">
+          <q-input v-model="filtros.empresa" dense outlined label="Empresa" clearable />
+        </div>
+        <div class="col-6 col-md-1">
+          <q-input v-model="filtros.ciudad" dense outlined label="Ciudad" clearable />
+        </div>
+        <div class="col-6 col-md-2">
+          <q-input v-model="filtros.pais" dense outlined label="País" clearable />
+        </div>
+      </div>
+    </q-card-section>
+
     <q-table
       title="Directorio Corporativo"
-      :rows="usuarios"
+      :rows="usuariosFiltrados"
       :columns="columns"
       row-key="id"
       :loading="loading"
@@ -82,12 +137,19 @@
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
+
+      <template v-slot:no-data>
+        <div class="full-width row flex-center text-negative q-pa-md">
+          <q-icon size="2em" name="warning" class="q-mr-sm" />
+          <span>No se encontraron colaboradores que coincidan con la búsqueda.</span>
+        </div>
+      </template>
     </q-table>
   </q-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 import { getUsers } from 'src/services/userService'
 
 const emit = defineEmits(['view-user'])
@@ -95,6 +157,43 @@ const emit = defineEmits(['view-user'])
 const loading = ref(false)
 
 const usuarios = ref([])
+
+const filtros = reactive({
+  busqueda: '',
+  genero: null,
+  edadMin: null,
+  edadMax: null,
+  empresa: '',
+  ciudad: '',
+  pais: '',
+})
+
+const usuariosFiltrados = computed(() => {
+  return usuarios.value.filter((user) => {
+    const nombreCompleto = `${user.firstName} ${user.lastName}`.toLowerCase()
+    const matchBusqueda =
+      !filtros.busqueda || nombreCompleto.includes(filtros.busqueda.toLowerCase())
+    const matchGenero = !filtros.genero || user.gender === filtros.genero
+    const matchEdadMin = !filtros.edadMin || user.age >= filtros.edadMin
+    const matchEdadMax = !filtros.edadMax || user.age <= filtros.edadMax
+    const matchEmpresa =
+      !filtros.empresa || user.company?.name.toLowerCase().includes(filtros.empresa.toLowerCase())
+    const matchCiudad =
+      !filtros.ciudad || user.address?.city.toLowerCase().includes(filtros.ciudad.toLowerCase())
+    const matchPais =
+      !filtros.pais || user.address?.country.toLowerCase().includes(filtros.pais.toLowerCase())
+
+    return (
+      matchBusqueda &&
+      matchGenero &&
+      matchEdadMin &&
+      matchEdadMax &&
+      matchEmpresa &&
+      matchCiudad &&
+      matchPais
+    )
+  })
+})
 
 const pagination = ref({
   sortBy: 'id',

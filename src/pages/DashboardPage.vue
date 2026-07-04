@@ -1,71 +1,162 @@
 <template>
-  <q-page class="q-pa-lg">
-    <div class="row items-center q-mb-lg">
+  <q-page class="q-pa-lg dashboard-page">
+    <div class="row items-center justify-between q-mb-lg gap-sm">
       <div>
-        <div class="text-h4 text-weight-bold">Dashboard de Indicadores</div>
-        <div class="text-subtitle2 text-grey-7">Resumen de usuarios, género, edad, empresas y ciudades</div>
+        <div class="text-h4 text-weight-bold">DashBoard</div>
+      </div>
+
+      <div class="row items-center gap-sm">
+        <q-btn
+          label="Actualizar"
+          color="secondary"
+          icon="refresh"
+          rounded
+          unelevated
+          @click="cargarUsuarios"
+        />
+        <q-btn label="Volver al directorio" color="primary" to="/" rounded unelevated />
       </div>
     </div>
 
-    <div class="q-gutter-md">
-      <q-card class="q-pa-md bg-grey-1">
-        <div class="row q-col-gutter-md">
-          <q-card-section class="col-12 col-md-4">
-            <div class="text-caption text-grey-7">Total de usuarios</div>
-            <div class="text-h3 text-primary text-weight-bold">{{ stats.totalUsers }}</div>
-          </q-card-section>
-
-          <q-card-section class="col-12 col-md-4">
-            <div class="text-caption text-grey-7">Hombres</div>
-            <div class="text-h3 text-secondary text-weight-bold">{{ stats.maleCount }}</div>
-          </q-card-section>
-
-          <q-card-section class="col-12 col-md-4">
-            <div class="text-caption text-grey-7">Mujeres</div>
-            <div class="text-h3 text-pink text-weight-bold">{{ stats.femaleCount }}</div>
-          </q-card-section>
-        </div>
+    <div class="row q-col-gutter-lg q-row-gutter-lg">
+      <q-card class="metric-card col-12 col-md-6 col-xl-3 shadow-2">
+        <q-card-section>
+          <div class="metric-icon bg-primary text-white">
+            <q-icon name="group" size="28px" />
+          </div>
+          <div class="text-caption text-grey-7 q-mb-xs">Total de usuarios</div>
+          <div class="text-h3 text-weight-bold">{{ stats.totalUsers }}</div>
+        </q-card-section>
       </q-card>
 
-      <div class="row q-gutter-md">
-        <q-card class="col-12 col-md-6 q-pa-md">
-          <div class="text-subtitle1 text-weight-bold q-mb-sm">Edad promedio</div>
-          <div class="text-h3 text-weight-bold">{{ stats.averageAge }}</div>
-          <div class="text-caption text-grey-7">Calculado en el frontend a partir de los usuarios cargados</div>
-        </q-card>
-
-        <q-card class="col-12 col-md-6 q-pa-md">
-          <div class="text-subtitle1 text-weight-bold q-mb-sm">Ciudades distintas</div>
-          <div class="text-h6 q-mb-md">{{ stats.cities.length }} ciudades</div>
-          <q-chip-group class="row q-col-gutter-xs" inline>
-            <q-chip v-for="city in stats.cities" :key="city" dense>{{ city }}</q-chip>
-          </q-chip-group>
-        </q-card>
-      </div>
-
-      <div class="row q-gutter-md">
-        <q-card class="col-12 col-md-6 q-pa-md">
-          <div class="text-subtitle1 text-weight-bold q-mb-sm">Empresas distintas</div>
-          <div class="text-h6 q-mb-md">{{ stats.companies.length }} empresas</div>
-          <q-chip-group class="row q-col-gutter-xs" inline>
-            <q-chip v-for="company in stats.companies" :key="company" dense>{{ company }}</q-chip>
-          </q-chip-group>
-        </q-card>
-
-        <q-card class="col-12 col-md-6 q-pa-md">
-          <div class="text-subtitle1 text-weight-bold q-mb-sm">Usuarios por empresa</div>
-          <div v-for="item in stats.usersByCompany" :key="item.company" class="row items-center q-py-xs">
-            <div class="col">{{ item.company }}</div>
-            <div class="text-weight-bold">{{ item.count }}</div>
+      <q-card class="metric-card col-12 col-md-6 col-xl-3 shadow-2">
+        <q-card-section>
+          <div class="metric-icon bg-blue-grey text-white">
+            <q-icon name="male" size="28px" />
           </div>
-        </q-card>
-      </div>
+          <div class="text-caption text-grey-7 q-mb-xs">Hombres</div>
+          <div class="text-h3 text-weight-bold">{{ stats.maleCount }}</div>
+        </q-card-section>
+      </q-card>
+
+      <q-card class="metric-card col-12 col-md-6 col-xl-3 shadow-2">
+        <q-card-section>
+          <div class="metric-icon bg-pink text-white">
+            <q-icon name="female" size="28px" />
+          </div>
+          <div class="text-caption text-grey-7 q-mb-xs">Mujeres</div>
+          <div class="text-h3 text-weight-bold">{{ stats.femaleCount }}</div>
+        </q-card-section>
+      </q-card>
+
+      <q-card class="metric-card col-12 col-md-6 col-xl-3 shadow-2">
+        <q-card-section>
+          <div class="metric-icon bg-indigo text-white">
+            <q-icon name="calendar_today" size="28px" />
+          </div>
+          <div class="text-caption text-grey-7 q-mb-xs">Edad promedio</div>
+          <div class="text-h3 text-weight-bold">{{ stats.averageAge }}</div>
+        </q-card-section>
+      </q-card>
+    </div>
+
+    <div class="row q-col-gutter-lg q-row-gutter-lg q-mt-lg">
+      <q-card class="col-12 col-lg-5 shadow-2">
+        <q-card-section class="row items-center justify-between">
+          <div>
+            <div class="text-subtitle1 text-weight-bold">Indicadores</div>
+          </div>
+          <q-badge color="primary" align="top" :label="`Total: ${totalCompanyCityCount}`" />
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 col-sm-6">
+            <div
+              class="row items-center justify-between company-header q-mb-sm"
+              @click="showCompanies = !showCompanies"
+            >
+              <div class="text-caption text-grey-7">Empresas</div>
+              <div class="row items-center gap-xs text-caption text-grey-7">
+                <span>{{ stats.companies.length }}</span>
+                <q-icon :name="showCompanies ? 'keyboard_arrow_up' : 'keyboard_arrow_down'" />
+              </div>
+            </div>
+            <q-chip-group class="chip-wrap">
+              <q-chip v-for="company in companyList" :key="company" dense outline>{{
+                company
+              }}</q-chip>
+            </q-chip-group>
+            <div
+              v-if="stats.companies.length > 6"
+              class="text-caption text-primary cursor-pointer q-mt-sm"
+              @click="showCompanies = !showCompanies"
+            >
+              {{ showCompanies ? 'Ver menos' : `Ver ${stats.companies.length - 6} más` }}
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6">
+            <div
+              class="row items-center justify-between company-header q-mb-sm"
+              @click="showCities = !showCities"
+            >
+              <div class="text-caption text-grey-7">Ciudades</div>
+              <div class="row items-center gap-xs text-caption text-grey-7">
+                <span>{{ stats.cities.length }}</span>
+                <q-icon :name="showCities ? 'keyboard_arrow_up' : 'keyboard_arrow_down'" />
+              </div>
+            </div>
+            <q-chip-group class="chip-wrap">
+              <q-chip v-for="city in cityList" :key="city" dense outline>{{ city }}</q-chip>
+            </q-chip-group>
+            <div
+              v-if="stats.cities.length > 6"
+              class="text-caption text-primary cursor-pointer q-mt-sm"
+              @click="showCities = !showCities"
+            >
+              {{ showCities ? 'Ver menos' : `Ver ${stats.cities.length - 6} más` }}
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+
+      <q-card class="col-12 col-lg-7 shadow-2">
+        <q-card-section>
+          <div class="text-subtitle1 text-weight-bold q-mb-sm">Top empresas</div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section class="q-pt-md">
+          <div v-if="stats.usersByCompany.length === 0" class="text-caption text-grey-7 q-pa-md">
+            No hay datos suficientes.
+          </div>
+
+          <div v-else>
+            <div v-for="item in topCompanies" :key="item.company" class="q-mb-md">
+              <div class="row items-center q-mb-xs">
+                <div class="col text-weight-medium">{{ item.company }}</div>
+                <div class="text-caption text-grey-7">{{ item.count }} usuarios</div>
+              </div>
+              <q-linear-progress
+                :value="item.count / (stats.totalUsers || 1)"
+                color="primary"
+                track-color="grey-3"
+                rounded
+                class="company-progress"
+              />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { getUsers } from 'src/services/userService'
 
 const usuarios = ref([])
@@ -78,6 +169,19 @@ const stats = ref({
   cities: [],
   usersByCompany: [],
 })
+
+const topCompanies = computed(() => stats.value.usersByCompany.slice(0, 6))
+const showCompanies = ref(false)
+const showCities = ref(false)
+const companyList = computed(() =>
+  showCompanies.value ? stats.value.companies : stats.value.companies.slice(0, 6),
+)
+const cityList = computed(() =>
+  showCities.value ? stats.value.cities : stats.value.cities.slice(0, 6),
+)
+const totalCompanyCityCount = computed(
+  () => (stats.value.companies?.length || 0) + (stats.value.cities?.length || 0),
+)
 
 const calcularEstadisticas = (data) => {
   const total = data.length
@@ -123,7 +227,101 @@ onMounted(() => {
 </script>
 
 <style scoped>
-q-chip-group {
+.dashboard-page {
+  min-height: calc(100vh - 64px);
+  background: #f4f7ff;
+}
+
+.metric-card {
+  min-height: 170px;
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.metric-icon {
+  width: 55px;
+  height: 55px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  margin-bottom: 16px;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+}
+
+.bg-gradient-blue {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+}
+
+.bg-gradient-pink {
+  background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
+}
+
+.bg-gradient-indigo {
+  background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+}
+
+.chip-wrap {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stats-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.stat-row,
+.summary-item,
+.city-row,
+.company-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-progress,
+.company-progress {
+  height: 14px;
+}
+
+.city-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.city-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+}
+
+.summary-label {
+  color: #6b7280;
+}
+
+.summary-value {
+  font-weight: 700;
+}
+
+.company-name {
+  min-width: 140px;
+}
+
+.company-header {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
+}
+
+.company-header:hover {
+  background-color: rgba(37, 99, 235, 0.06);
 }
 </style>

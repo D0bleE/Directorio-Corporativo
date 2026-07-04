@@ -6,13 +6,7 @@
         <div class="text-subtitle2 text-grey-7">Consulta de colaboradores registrados</div>
       </div>
 
-      <q-btn
-        label="Ver Dashboard"
-        color="primary"
-        to="/dashboard"
-        rounded
-        unelevated
-      />
+      <q-btn label="Ver Dashboard" color="primary" to="/dashboard" rounded unelevated />
     </div>
 
     <UserTable @view-user="abrirDetalle" />

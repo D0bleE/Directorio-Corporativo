@@ -9,6 +9,10 @@ const routes = [
         component: () => import('pages/HomePage.vue'),
       },
       {
+        path: 'comparacion',
+        component: () => import('pages/CompareUsersPage.vue'),
+      },
+      {
         path: 'dashboard',
         component: () => import('pages/DashboardPage.vue'),
       },

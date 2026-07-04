@@ -2,7 +2,7 @@
   <q-page class="q-pa-lg dashboard-page">
     <div class="row items-center justify-between q-mb-lg gap-sm">
       <div>
-        <div class="text-h4 text-weight-bold">DashBoard</div>
+        <div class="text-h4 text-weight-bold text-grey-9">DashBoard</div>
       </div>
 
       <div class="row items-center gap-sm">
@@ -25,7 +25,7 @@
             <q-icon name="group" size="28px" />
           </div>
           <div class="text-caption text-grey-7 q-mb-xs">Total de usuarios</div>
-          <div class="text-h3 text-weight-bold">{{ stats.totalUsers }}</div>
+          <div class="text-h3 text-weight-bold text-grey-9">{{ stats.totalUsers }}</div>
         </q-card-section>
       </q-card>
 
@@ -35,8 +35,7 @@
             <q-icon name="male" size="28px" />
           </div>
           <div class="text-caption text-grey-7 q-mb-xs">Hombres</div>
-          <div class="text-h3 text-weight-bold">{{ stats.maleCount }}</div>
-        </q-card-section>
+          <div class="text-h3 text-weight-bold text-grey-9">{{ stats.maleCount }}</div>        </q-card-section>
       </q-card>
 
       <q-card class="metric-card col-12 col-md-6 col-xl-3 shadow-2">
@@ -45,7 +44,7 @@
             <q-icon name="female" size="28px" />
           </div>
           <div class="text-caption text-grey-7 q-mb-xs">Mujeres</div>
-          <div class="text-h3 text-weight-bold">{{ stats.femaleCount }}</div>
+          <div class="text-h3 text-weight-bold text-grey-9">{{ stats.femaleCount }}</div>
         </q-card-section>
       </q-card>
 
@@ -55,7 +54,7 @@
             <q-icon name="calendar_today" size="28px" />
           </div>
           <div class="text-caption text-grey-7 q-mb-xs">Edad promedio</div>
-          <div class="text-h3 text-weight-bold">{{ stats.averageAge }}</div>
+          <div class="text-h3 text-weight-bold text-grey-9">{{ stats.averageAge }}</div>
         </q-card-section>
       </q-card>
     </div>
@@ -64,7 +63,7 @@
       <q-card class="col-12 col-lg-5 shadow-2">
         <q-card-section class="row items-center justify-between">
           <div>
-            <div class="text-subtitle1 text-weight-bold">Indicadores</div>
+            <div class="text-subtitle1 text-weight-bold text-grey-9">Indicadores</div>
           </div>
           <q-badge color="primary" align="top" :label="`Total: ${totalCompanyCityCount}`" />
         </q-card-section>
@@ -124,7 +123,7 @@
 
       <q-card class="col-12 col-lg-7 shadow-2">
         <q-card-section>
-          <div class="text-subtitle1 text-weight-bold q-mb-sm">Top empresas</div>
+          <div class="text-subtitle1 text-weight-bold q-mb-sm text-grey-9">Top empresas</div>
         </q-card-section>
 
         <q-separator />
@@ -137,7 +136,7 @@
           <div v-else>
             <div v-for="item in topCompanies" :key="item.company" class="q-mb-md">
               <div class="row items-center q-mb-xs">
-                <div class="col text-weight-medium">{{ item.company }}</div>
+                <div class="col text-weight-medium text-grey-9">{{ item.company }}</div>
                 <div class="text-caption text-grey-7">{{ item.count }} usuarios</div>
               </div>
               <q-linear-progress

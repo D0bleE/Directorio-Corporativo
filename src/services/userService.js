@@ -11,3 +11,9 @@ export const getUserById = async (id) => {
 
   return data
 }
+
+export const getUserCarts = async (userId) => {
+  const { data } = await api.get(`/users/${userId}/carts`)
+
+  return data
+}

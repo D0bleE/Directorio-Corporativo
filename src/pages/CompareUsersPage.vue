@@ -3,22 +3,14 @@
     <!-- ENCABEZADO -->
     <div class="row justify-between items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-white">
-          Comparación de usuarios
-        </div>
+        <div class="text-h4 text-weight-bold text-white">Comparación de usuarios</div>
 
         <div class="text-subtitle2 text-grey-4">
           Selecciona dos colaboradores para comparar su información
         </div>
       </div>
 
-      <q-btn
-        color="primary"
-        icon="arrow_back"
-        label="Volver al directorio"
-        no-caps
-        to="/"
-      />
+      <q-btn color="primary" icon="arrow_back" label="Volver al directorio" no-caps to="/" />
     </div>
 
     <!-- SELECTORES -->
@@ -91,12 +83,7 @@
     </q-card>
 
     <!-- RESULTADO -->
-    <q-card
-      v-if="filasComparacion.length > 0"
-      flat
-      bordered
-      class="bg-white"
-    >
+    <q-card v-if="filasComparacion.length > 0" flat bordered class="bg-white">
       <q-table
         title="Resultado de comparación"
         :rows="filasComparacion"
@@ -207,27 +194,21 @@ const compararUsuarios = () => {
   }
 
   filasComparacion.value = [
-    crearFila('ID', usuario1.id, usuario2.id),
-    crearFila('Imagen', usuario1.image, usuario2.image),
-    crearFila('Nombre', usuario1.firstName, usuario2.firstName),
-    crearFila('Apellido', usuario1.lastName, usuario2.lastName),
+    crearFila(
+      'Nombre',
+      `${usuario1.firstName} ${usuario1.lastName}`,
+      `${usuario2.firstName} ${usuario2.lastName}`,
+    ),
     crearFila('Edad', usuario1.age, usuario2.age),
     crearFila('Género', usuario1.gender, usuario2.gender),
-    crearFila('Correo', usuario1.email, usuario2.email),
-    crearFila('Teléfono', usuario1.phone, usuario2.phone),
-    crearFila('Usuario', usuario1.username, usuario2.username),
-    crearFila('Fecha de nacimiento', usuario1.birthDate, usuario2.birthDate),
-    crearFila('Grupo sanguíneo', usuario1.bloodGroup, usuario2.bloodGroup),
+    crearFila('Empresa', usuario1.company?.name, usuario2.company?.name),
+    crearFila('Cargo', usuario1.company?.title, usuario2.company?.title),
+    crearFila('Universidad', usuario1.university, usuario2.university),
+    crearFila('Ciudad', usuario1.address?.city, usuario2.address?.city),
+    crearFila('País', usuario1.address?.country, usuario2.address?.country),
     crearFila('Altura', usuario1.height, usuario2.height),
     crearFila('Peso', usuario1.weight, usuario2.weight),
-    crearFila('Color de ojos', usuario1.eyeColor, usuario2.eyeColor),
-    crearFila('Cabello', formatearCabello(usuario1.hair), formatearCabello(usuario2.hair)),
-    crearFila('Dirección', formatearDireccion(usuario1.address), formatearDireccion(usuario2.address)),
-    crearFila('Universidad', usuario1.university, usuario2.university),
-    crearFila('Empresa', formatearEmpresa(usuario1.company), formatearEmpresa(usuario2.company)),
-    crearFila('Banco', formatearBanco(usuario1.bank), formatearBanco(usuario2.bank)),
-    crearFila('Criptomoneda', formatearCrypto(usuario1.crypto), formatearCrypto(usuario2.crypto)),
-    crearFila('Rol', usuario1.role, usuario2.role),
+    crearFila('Grupo sanguíneo', usuario1.bloodGroup, usuario2.bloodGroup),
   ]
 }
 
@@ -241,36 +222,6 @@ const crearFila = (campo, valor1, valor2) => {
     usuario2: dato2,
     esDiferente: String(dato1) !== String(dato2),
   }
-}
-
-const formatearDireccion = (address) => {
-  if (!address) return 'No disponible'
-
-  return `${address.address || ''}, ${address.city || ''}, ${address.state || ''}, ${address.country || ''}`
-}
-
-const formatearEmpresa = (company) => {
-  if (!company) return 'No disponible'
-
-  return `${company.name || ''} - ${company.department || ''} - ${company.title || ''}`
-}
-
-const formatearBanco = (bank) => {
-  if (!bank) return 'No disponible'
-
-  return `${bank.cardType || ''} - ${bank.cardNumber || ''}`
-}
-
-const formatearCrypto = (crypto) => {
-  if (!crypto) return 'No disponible'
-
-  return `${crypto.coin || ''} - ${crypto.wallet || ''}`
-}
-
-const formatearCabello = (hair) => {
-  if (!hair) return 'No disponible'
-
-  return `${hair.color || ''} - ${hair.type || ''}`
 }
 </script>
 

@@ -8,7 +8,7 @@
             dense
             outlined
             placeholder="Buscar por nombre o apellido"
-            clearable
+            clearableactua
           >
             <template v-slot:prepend><q-icon name="search" /></template>
           </q-input>
@@ -161,64 +161,124 @@
     </q-table>
 
     <q-dialog v-model="dialog" persistent>
-      <q-card style="min-width: 460px; max-width: 90vw">
+      <q-card class="bg-white text-black" style="min-width: 680px; max-width: 95vw">
+        <q-card-section class="text-black">
+          <div class="row items-center q-col-gutter-md">
+            <div class="col-auto">
+              <q-avatar size="96px">
+                <img :src="detailUser.image" :alt="detailUser.firstName" />
+              </q-avatar>
+            </div>
+            <div class="col">
+              <div class="text-h6">{{ detailUser.firstName }} {{ detailUser.lastName }}</div>
+              <div class="text-subtitle2 text-black">
+                ID: {{ detailUser.id }} · {{ detailUser.email }}
+              </div>
+            </div>
+          </div>
+
+          <q-tabs
+            v-model="selectedTab"
+            align="left"
+            active-color="primary"
+            indicator-color="primary"
+            class="text-black q-mt-md"
+            @update:model-value="onTabChange"
+          >
+            <q-tab name="detalle" label="Detalle" />
+            <q-tab name="compras" label="Compras" />
+          </q-tabs>
+        </q-card-section>
+
+        <q-separator />
+
         <q-card-section>
-          <div class="text-h6">Editar colaborador</div>
-          <div class="text-subtitle2 text-grey-7">
-            Actualiza el nombre, apellido, ciudad o país sin permitir números.
+          <div class="row q-col-gutter-md q-row-gutter-md">
+            <div class="col-12 col-md-6">
+              <div class="text-subtitle1">Datos personales</div>
+              <div>Edad: {{ detailUser.age }}</div>
+              <div>Género: {{ detailUser.gender }}</div>
+              <div>Teléfono: {{ detailUser.phone }}</div>
+              <div>Usuario: {{ detailUser.username }}</div>
+              <div>Fecha de nacimiento: {{ detailUser.birthDate }}</div>
+              <div>Grupo sanguíneo: {{ detailUser.bloodGroup }}</div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="text-subtitle1">Información física</div>
+              <div>Altura: {{ detailUser.height }} cm</div>
+              <div>Peso: {{ detailUser.weight }} kg</div>
+              <div>Color de ojos: {{ detailUser.eyeColor }}</div>
+              <div>Cabello: {{ detailUser.hair?.color }} / {{ detailUser.hair?.type }}</div>
+            </div>
           </div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <q-form ref="form" @submit.prevent="guardarUsuario">
-            <div class="row q-col-gutter-md q-row-gutter-md">
-              <div class="col-12 col-md-6">
-                <q-input
-                  v-model="userForm.firstName"
-                  label="Nombre"
-                  dense
-                  outlined
-                  :rules="[rules.required, rules.noNumbers]"
-                  @input="stripNumbers('firstName', $event)"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  v-model="userForm.lastName"
-                  label="Apellido"
-                  dense
-                  outlined
-                  :rules="[rules.required, rules.noNumbers]"
-                  @input="stripNumbers('lastName', $event)"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  v-model="userForm.city"
-                  label="Ciudad"
-                  dense
-                  outlined
-                  :rules="[rules.required, rules.noNumbers]"
-                  @input="stripNumbers('city', $event)"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  v-model="userForm.country"
-                  label="País"
-                  dense
-                  outlined
-                  :rules="[rules.required, rules.noNumbers]"
-                  @input="stripNumbers('country', $event)"
-                />
+        <q-separator />
+
+        <q-card-section>
+          <div class="row q-col-gutter-md q-row-gutter-md">
+            <div class="col-12 col-md-6">
+              <div class="text-subtitle1">Información laboral</div>
+              <div>Empresa: {{ detailUser.company?.name }}</div>
+              <div>Cargo: {{ detailUser.company?.title }}</div>
+              <div>Dominio: {{ detailUser.domain }}</div>
+              <div>Departamento: {{ detailUser.company?.department }}</div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="text-subtitle1">Universidad</div>
+              <div>{{ detailUser.university }}</div>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <div class="row q-col-gutter-md q-row-gutter-md">
+            <div class="col-12 col-md-6">
+              <div class="text-subtitle1">Dirección</div>
+              <div>Dirección: {{ detailUser.address?.address }}</div>
+              <div>Ciudad: {{ detailUser.address?.city }}</div>
+              <div>Estado: {{ detailUser.address?.state }}</div>
+              <div>Código postal: {{ detailUser.address?.postalCode }}</div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="text-subtitle1">Banco</div>
+              <div>IBAN: {{ detailUser.bank?.iban }}</div>
+              <div>Tarjeta: {{ detailUser.bank?.cardNumber }}</div>
+              <div>Tipo: {{ detailUser.bank?.cardType }}</div>
+              <div>Divisa: {{ detailUser.bank?.currency }}</div>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section class="text-black">
+          <div class="row q-col-gutter-md q-row-gutter-md">
+            <div class="col-12">
+              <div class="text-subtitle1">Criptomonedas</div>
+              <div v-if="detailUser.crypto?.coin">Moneda: {{ detailUser.crypto.coin }}</div>
+              <div v-if="detailUser.crypto?.wallet">Wallet: {{ detailUser.crypto.wallet }}</div>
+              <div v-if="detailUser.crypto?.network">Red: {{ detailUser.crypto.network }}</div>
+              <div
+                v-if="
+                  !detailUser.crypto?.coin &&
+                  !detailUser.crypto?.wallet &&
+                  !detailUser.crypto?.network
+                "
+              >
+                No hay información de criptomonedas.
               </div>
             </div>
-          </q-form>
+          </div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" @click="cancelar" />
-          <q-btn color="primary" label="Guardar" unelevated @click="guardarUsuario" />
+          <q-btn flat label="Cerrar" @click="dialog = false" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -227,7 +287,8 @@
 
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue'
-import { getUsers } from 'src/services/userService'
+import { useRouter } from 'vue-router'
+import { getUsers, getUserById } from 'src/services/userService'
 
 const loading = ref(false)
 
@@ -244,57 +305,36 @@ const filtros = reactive({
 })
 
 const dialog = ref(false)
-const form = ref(null)
-const selectedUser = ref(null)
+const selectedTab = ref('detalle')
+const router = useRouter()
+const detailUser = reactive({})
 
-const userForm = reactive({
-  firstName: '',
-  lastName: '',
-  city: '',
-  country: '',
-})
-
-const rules = {
-  required: (val) => !!val || 'Campo obligatorio',
-  noNumbers: (val) => !/\d/.test(val) || 'No se permiten números',
-}
-
-const stripNumbers = (field, value) => {
-  userForm[field] = value.replace(/\d+/g, '')
-}
-
-const openDialog = (usuario) => {
-  selectedUser.value = usuario
-  userForm.firstName = usuario.firstName || ''
-  userForm.lastName = usuario.lastName || ''
-  userForm.city = usuario.address?.city || ''
-  userForm.country = usuario.address?.country || ''
-  dialog.value = true
-}
-
-const guardarUsuario = async () => {
-  if (form.value) {
-    const valid = await form.value.validate()
-    if (!valid) {
-      return
-    }
+const onTabChange = (tab) => {
+  if (tab === 'compras') {
+    selectedTab.value = 'detalle'
+    goToCart()
   }
-
-  if (selectedUser.value) {
-    selectedUser.value.firstName = userForm.firstName
-    selectedUser.value.lastName = userForm.lastName
-    if (!selectedUser.value.address) {
-      selectedUser.value.address = {}
-    }
-    selectedUser.value.address.city = userForm.city
-    selectedUser.value.address.country = userForm.country
-  }
-
-  dialog.value = false
 }
 
-const cancelar = () => {
+const goToCart = () => {
   dialog.value = false
+  if (detailUser.id) {
+    router.push({ name: 'cart-detail', params: { userId: detailUser.id } })
+  }
+}
+
+const openDialog = async (usuario) => {
+  try {
+    loading.value = true
+    const data = await getUserById(usuario.id)
+    Object.keys(detailUser).forEach((key) => delete detailUser[key])
+    Object.assign(detailUser, data)
+    dialog.value = true
+  } catch (error) {
+    console.error('Error cargando detalle:', error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const usuariosFiltrados = computed(() => {

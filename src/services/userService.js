@@ -5,3 +5,9 @@ export const getUsers = async (limit = 10, skip = 0) => {
 
   return data
 }
+
+export const getUserById = async (id) => {
+  const { data } = await api.get(`/users/${id}`)
+
+  return data
+}

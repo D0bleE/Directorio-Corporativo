@@ -31,15 +31,25 @@
     </div>
 
     <UserTable @view-user="abrirDetalle" />
+
+    <UserDetailDialog v-model="dialog" :user-id="userId" />
   </q-page>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 import UserTable from 'src/components/UserTable.vue'
+import UserDetailDialog from 'src/components/UserDetailDialog.vue'
+
+const dialog = ref(false)
+
+const userId = ref(null)
 
 const abrirDetalle = (usuario) => {
   console.log('Usuario seleccionado:', usuario)
 
-  // Aquí el Integrante 3 abrirá el QDialog
+  userId.value = usuario.id
+  dialog.value = true
 }
 </script>

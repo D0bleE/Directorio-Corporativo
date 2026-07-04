@@ -13,6 +13,11 @@ const routes = [
         component: () => import('pages/CompareUsersPage.vue'),
       },
       {
+        path: 'carrito/:userId',
+        name: 'cart-detail',
+        component: () => import('pages/CartPage.vue'),
+      },
+      {
         path: 'dashboard',
         component: () => import('pages/DashboardPage.vue'),
       },

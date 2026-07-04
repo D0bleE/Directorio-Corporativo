@@ -107,17 +107,39 @@
         v-model:pagination="paginationTabla"
         :rows-per-page-options="[10, 20, 0]"
       >
+        <!-- COLUMNA USUARIO 1 -->
         <template v-slot:body-cell-usuario1="props">
           <q-td :props="props">
-            <span :class="props.row.esDiferente ? 'text-negative text-weight-bold' : 'text-black'">
+            <q-avatar
+              v-if="props.row.campo === 'Imagen'"
+              size="60px"
+            >
+              <img :src="props.row.usuario1" alt="Imagen usuario 1" />
+            </q-avatar>
+
+            <span
+              v-else
+              :class="props.row.esDiferente ? 'text-negative text-weight-bold' : 'text-black'"
+            >
               {{ props.row.usuario1 }}
             </span>
           </q-td>
         </template>
 
+        <!-- COLUMNA USUARIO 2 -->
         <template v-slot:body-cell-usuario2="props">
           <q-td :props="props">
-            <span :class="props.row.esDiferente ? 'text-negative text-weight-bold' : 'text-black'">
+            <q-avatar
+              v-if="props.row.campo === 'Imagen'"
+              size="60px"
+            >
+              <img :src="props.row.usuario2" alt="Imagen usuario 2" />
+            </q-avatar>
+
+            <span
+              v-else
+              :class="props.row.esDiferente ? 'text-negative text-weight-bold' : 'text-black'"
+            >
               {{ props.row.usuario2 }}
             </span>
           </q-td>
